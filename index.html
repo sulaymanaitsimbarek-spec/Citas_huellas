@@ -13,8 +13,8 @@
     input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; box-sizing: border-box; font-size: 14px; }
     button, a.btn { display: block; width: 100%; text-align: center; padding: 12px; margin-top: 14px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; text-decoration: none; box-sizing: border-box; }
     .save-btn { background: #0284c7; color: #fff; }
+    .copy-btn { background: #f59e0b; color: #451a03; }
     .go-btn { background: #10b981; color: #052e16; }
-    .bm-btn { background: #f59e0b; color: #451a03; }
     .status { margin-top: 12px; padding: 10px; border-radius: 8px; background: #0f172a; font-size: 13px; color: #38bdf8; text-align: center; }
     small { display: block; margin-top: 8px; color: #94a3b8; font-size: 12px; line-height: 1.5; }
   </style>
@@ -54,9 +54,9 @@
     <label>البريد الإلكتروني (Email)</label>
     <input id="email" type="email" placeholder="example@gmail.com" />
 
-    <button class="save-btn" onclick="saveData()">💾 حفظ المعطيات وتحديث زر التعمير</button>
+    <button class="save-btn" onclick="saveData()">💾 حفظ المعطيات</button>
 
-    <a id="bookmarklet" class="btn bm-btn" href="#">⚡ اسحب هذا الزر للمفضلة (تعمير تلقائي)</a>
+    <button class="copy-btn" onclick="copyScript()">📋 نسخ كود التعمير</button>
 
     <a class="btn go-btn" href="https://icp.administracionelectronica.gob.es/icpplus/index.html" target="_blank">
       🌐 فتح الموقع الرسمي للمواعيد
@@ -69,22 +69,25 @@
   <script>
     const fields = ['city', 'docType', 'docNum', 'fullName', 'birthYear', 'country', 'phone', 'email'];
 
+    function getFormData() {
+      const data = {};
+      fields.forEach(f => data[f] = document.getElementById(f).value.trim());
+      return data;
+    }
+
     function loadData() {
       const saved = JSON.parse(localStorage.getItem('cita_huellas_data') || '{}');
       fields.forEach(f => { if (saved[f]) document.getElementById(f).value = saved[f]; });
-      buildBookmarklet(saved);
     }
 
     function saveData() {
-      const data = {};
-      fields.forEach(f => data[f] = document.getElementById(f).value.trim());
+      const data = getFormData();
       localStorage.setItem('cita_huellas_data', JSON.stringify(data));
-      buildBookmarklet(data);
-      document.getElementById('status').textContent = '✅ تم حفظ المعطيات بنجاح وتحديث زر التعمير!';
+      document.getElementById('status').textContent = '✅ تم حفظ المعطيات بنجاح!';
     }
 
-    function buildBookmarklet(d) {
-      const code = `javascript:(function(){
+    function buildScriptCode(d) {
+      return `javascript:(function(){
         const d=${JSON.stringify(d)};
         const setVal=(sel,val)=>{const el=document.querySelector(sel);if(el&&val){el.value=val;el.dispatchEvent(new Event('change',{bubbles:true}));el.dispatchEvent(new Event('input',{bubbles:true}));}};
         const selText=(sel,txt)=>{const el=document.querySelector(sel);if(!el)return;for(let o of el.options){if(o.text.toUpperCase().includes(txt.toUpperCase())){el.value=o.value;el.dispatchEvent(new Event('change',{bubbles:true}));break;}}};
@@ -99,8 +102,27 @@
         setVal('#emailUNO', d.email);
         setVal('#emailDOS', d.email);
         alert('تم تعمير البيانات المتاحة في هذه الصفحة!');
-      })();`;
-      document.getElementById('bookmarklet').href = code.replace(/\s+/g, ' ');
+      })();`.replace(/\s+/g, ' ');
+    }
+
+    async function copyScript() {
+      const data = getFormData();
+      localStorage.setItem('cita_huellas_data', JSON.stringify(data));
+      const code = buildScriptCode(data);
+      const statusEl = document.getElementById('status');
+
+      try {
+        await navigator.clipboard.writeText(code);
+        statusEl.textContent = '✅ تم نسخ كود التعمير! ألصقه في رابط الإشارة المرجعية.';
+      } catch (e) {
+        const temp = document.createElement('textarea');
+        temp.value = code;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        statusEl.textContent = '✅ تم نسخ كود التعمير! ألصقه في رابط الإشارة المرجعية.';
+      }
     }
 
     loadData();
