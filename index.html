@@ -1,80 +1,109 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>Cita Huellas</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;padding:20px;background:#101827;color:white;font-family:Arial,sans-serif}
-header{text-align:center;padding:20px 0}
-h1{color:#54d6ad;margin-bottom:8px}
-.card{background:#202e42;padding:20px;border-radius:16px;margin-top:16px}
-label{display:block;margin:16px 0 8px}
-select,button{width:100%;padding:15px;border:0;border-radius:9px;font-size:16px}
-select{background:#fff;color:#111}
-button{margin-top:14px;background:#16a982;color:white;font-weight:bold}
-.secondary{background:#34465f}
-#status{color:#54d6ad;line-height:1.7}
-small{color:#aebdce;line-height:1.7}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CITA HUELLAS - المساعد الذكي</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 16px; }
+    .card { max-width: 480px; margin: auto; background: #1e293b; padding: 20px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+    h1 { margin: 0 0 4px; font-size: 22px; color: #38bdf8; text-align: center; }
+    p.sub { margin: 0 0 18px; text-align: center; color: #94a3b8; font-size: 13px; }
+    label { display: block; margin: 10px 0 4px; font-size: 13px; color: #cbd5e1; }
+    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; box-sizing: border-box; font-size: 14px; }
+    button, a.btn { display: block; width: 100%; text-align: center; padding: 12px; margin-top: 14px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; text-decoration: none; box-sizing: border-box; }
+    .save-btn { background: #0284c7; color: #fff; }
+    .go-btn { background: #10b981; color: #052e16; }
+    .bm-btn { background: #f59e0b; color: #451a03; }
+    .status { margin-top: 12px; padding: 10px; border-radius: 8px; background: #0f172a; font-size: 13px; color: #38bdf8; text-align: center; }
+    small { display: block; margin-top: 8px; color: #94a3b8; font-size: 12px; line-height: 1.5; }
+  </style>
 </head>
 <body>
-<header>
-<h1>CITA HUELLAS</h1>
-<p>مساعد مواعيد البصمات في إسبانيا</p>
-<small>Barcelona • Logroño</small>
-</header>
+  <div class="card">
+    <h1>CITA HUELLAS</h1>
+    <p class="sub">حفظ المعطيات والتعمير التلقائي لمواعيد البصمات</p>
 
-<div class="card">
-<label for="city">اختر المدينة</label>
-<select id="city">
-<option value="Logroño">Logroño</option>
-<option value="Barcelona">Barcelona</option>
-</select>
+    <label>المدينة (Provincia)</label>
+    <select id="city">
+      <option value="La Rioja">Logroño (La Rioja)</option>
+      <option value="Barcelona">Barcelona</option>
+    </select>
 
-<label for="appointment">نوع الموعد</label>
-<select id="appointment">
-<option value="TOMA DE HUELLAS">
-TOMA DE HUELLA (EXPEDICIÓN DE TARJETA)
-</option>
-</select>
+    <label>نوع الوثيقة</label>
+    <select id="docType">
+      <option value="NIE">NIE</option>
+      <option value="PASAPORTE">PASAPORTE</option>
+    </select>
 
-<button onclick="saveSettings()">حفظ الاختيارات</button>
-<button class="secondary" onclick="openICP()">فتح موقع المواعيد الرسمي</button>
+    <label>رقم الوثيقة (NIE / Pasaporte)</label>
+    <input id="docNum" placeholder="مثال: Y1234567X" />
 
-<p id="status">لم يتم بدء المراقبة</p>
-</div>
+    <label>الاسم الكامل (Nombre y apellidos)</label>
+    <input id="fullName" placeholder="كما هو مكتوب في الوثيقة" />
 
-<div class="card">
-<h3>حالة التطبيق</h3>
-<p>التطبيق جاهز لربط نظام مراقبة المواعيد.</p>
-<small>هذه النسخة لا تحجز موعداً تلقائياً ولا تدّعي توفر المواعيد. الحجز النهائي يتم عبر الموقع الرسمي.</small>
-</div>
+    <label>سنة الازدياد (Año de nacimiento)</label>
+    <input id="birthYear" type="number" placeholder="1995" />
 
-<script>
-const city=document.getElementById("city");
-const appointment=document.getElementById("appointment");
-const status=document.getElementById("status");
+    <label>الجنسية (País de nacionalidad)</label>
+    <input id="country" value="MARRUECOS" />
 
-city.value=localStorage.getItem("city")||"Logroño";
+    <label>رقم الهاتف (Teléfono)</label>
+    <input id="phone" type="tel" placeholder="600000000" />
 
-function saveSettings(){
-localStorage.setItem("city",city.value);
-localStorage.setItem("appointment",appointment.value);
-status.textContent="تم حفظ اختياراتك: "+city.value;
-}
+    <label>البريد الإلكتروني (Email)</label>
+    <input id="email" type="email" placeholder="example@gmail.com" />
 
-function openICP(){
-window.open(
-"https://icp.administracionelectronica.gob.es/icpplus/index",
-"_blank"
-);
-}
+    <button class="save-btn" onclick="saveData()">💾 حفظ المعطيات وتحديث زر التعمير</button>
 
-appointment.value=localStorage.getItem("appointment")||"TOMA DE HUELLAS";
-</script>
+    <a id="bookmarklet" class="btn bm-btn" href="#">⚡ اسحب هذا الزر للمفضلة (تعمير تلقائي)</a>
+
+    <a class="btn go-btn" href="https://icp.administracionelectronica.gob.es/icpplus/index.html" target="_blank">
+      🌐 فتح الموقع الرسمي للمواعيد
+    </a>
+
+    <div class="status" id="status">في انتظار إدخال وحفظ المعطيات...</div>
+    <small>ملاحظة: بياناتك تُحفظ في متصفحك فقط ولا تُرسل لأي خادم خارجي.</small>
+  </div>
+
+  <script>
+    const fields = ['city', 'docType', 'docNum', 'fullName', 'birthYear', 'country', 'phone', 'email'];
+
+    function loadData() {
+      const saved = JSON.parse(localStorage.getItem('cita_huellas_data') || '{}');
+      fields.forEach(f => { if (saved[f]) document.getElementById(f).value = saved[f]; });
+      buildBookmarklet(saved);
+    }
+
+    function saveData() {
+      const data = {};
+      fields.forEach(f => data[f] = document.getElementById(f).value.trim());
+      localStorage.setItem('cita_huellas_data', JSON.stringify(data));
+      buildBookmarklet(data);
+      document.getElementById('status').textContent = '✅ تم حفظ المعطيات بنجاح وتحديث زر التعمير!';
+    }
+
+    function buildBookmarklet(d) {
+      const code = `javascript:(function(){
+        const d=${JSON.stringify(d)};
+        const setVal=(sel,val)=>{const el=document.querySelector(sel);if(el&&val){el.value=val;el.dispatchEvent(new Event('change',{bubbles:true}));el.dispatchEvent(new Event('input',{bubbles:true}));}};
+        const selText=(sel,txt)=>{const el=document.querySelector(sel);if(!el)return;for(let o of el.options){if(o.text.toUpperCase().includes(txt.toUpperCase())){el.value=o.value;el.dispatchEvent(new Event('change',{bubbles:true}));break;}}};
+        selText('#form', d.city);
+        selText('#tramiteGrupo\\\\[0\\\\]', 'TOMA DE HUELLA');
+        if(d.docType==='PASAPORTE'){const r=document.querySelector('#rdbTipoDocPas');if(r)r.click();}
+        setVal('#txtIdCitado', d.docNum);
+        setVal('#txtDesCitado', d.fullName);
+        setVal('#txtAnnoCitado', d.birthYear);
+        selText('#txtPaisNac', d.country);
+        setVal('#txtTelefonoCitado', d.phone);
+        setVal('#emailUNO', d.email);
+        setVal('#emailDOS', d.email);
+        alert('تم تعمير البيانات المتاحة في هذه الصفحة!');
+      })();`;
+      document.getElementById('bookmarklet').href = code.replace(/\s+/g, ' ');
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
