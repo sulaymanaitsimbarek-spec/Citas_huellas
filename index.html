@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Cita Huellas</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#101827;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:20px 0}
+h1{color:#54d6ad;margin-bottom:8px}
+.card{background:#202e42;padding:20px;border-radius:16px;margin-top:16px}
+label{display:block;margin:16px 0 8px}
+select,button{width:100%;padding:15px;border:0;border-radius:9px;font-size:16px}
+select{background:#fff;color:#111}
+button{margin-top:14px;background:#16a982;color:white;font-weight:bold}
+.secondary{background:#34465f}
+#status{color:#54d6ad;line-height:1.7}
+small{color:#aebdce;line-height:1.7}
+</style>
+</head>
+<body>
+<header>
+<h1>CITA HUELLAS</h1>
+<p>مساعد مواعيد البصمات في إسبانيا</p>
+<small>Barcelona • Logroño</small>
+</header>
+
+<div class="card">
+<label for="city">اختر المدينة</label>
+<select id="city">
+<option value="Logroño">Logroño</option>
+<option value="Barcelona">Barcelona</option>
+</select>
+
+<label for="appointment">نوع الموعد</label>
+<select id="appointment">
+<option value="TOMA DE HUELLAS">
+TOMA DE HUELLA (EXPEDICIÓN DE TARJETA)
+</option>
+</select>
+
+<button onclick="saveSettings()">حفظ الاختيارات</button>
+<button class="secondary" onclick="openICP()">فتح موقع المواعيد الرسمي</button>
+
+<p id="status">لم يتم بدء المراقبة</p>
+</div>
+
+<div class="card">
+<h3>حالة التطبيق</h3>
+<p>التطبيق جاهز لربط نظام مراقبة المواعيد.</p>
+<small>هذه النسخة لا تحجز موعداً تلقائياً ولا تدّعي توفر المواعيد. الحجز النهائي يتم عبر الموقع الرسمي.</small>
+</div>
+
+<script>
+const city=document.getElementById("city");
+const appointment=document.getElementById("appointment");
+const status=document.getElementById("status");
+
+city.value=localStorage.getItem("city")||"Logroño";
+
+function saveSettings(){
+localStorage.setItem("city",city.value);
+localStorage.setItem("appointment",appointment.value);
+status.textContent="تم حفظ اختياراتك: "+city.value;
+}
+
+function openICP(){
+window.open(
+"https://icp.administracionelectronica.gob.es/icpplus/index",
+"_blank"
+);
+}
+
+appointment.value=localStorage.getItem("appointment")||"TOMA DE HUELLAS";
+</script>
+</body>
+</html>
